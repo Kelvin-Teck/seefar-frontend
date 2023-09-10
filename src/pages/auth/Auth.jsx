@@ -1,7 +1,7 @@
 import "./Auth.css";
 import Logo from "../../img/logo.png";
 import { useState } from "react";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import { logIn, signUp } from "../../actions/authAction";
 
 const Auth = () => {
@@ -24,11 +24,12 @@ const Auth = () => {
     e.preventDefault();
 
     if (isSignUp) {
-       data.password === data.confirmpass ? dispatch(signUp(data)) : setConfirmPass(false);
+      data.password === data.confirmpass
+        ? dispatch(signUp(data))
+        : setConfirmPass(false);
     } else {
       dispatch(logIn(data));
     }
-
   };
 
   const resetForm = () => {

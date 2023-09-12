@@ -9,23 +9,29 @@ const Post = ({ data, id }) => {
   const { user } = useSelector(state => state.authReducer.authData);
 
   return (
-    <div key={id} className='Post'>
-      <img src={data.image ? process.env.REACT_APP_PUBLIC_FOLDER + data.image : "" } alt='postimage' />
-      
-      <div className='postReact'>
-        <img src={ data.liked ? Heart : notLike} alt='like/notlike' />
-        <img src={ Comment} alt='comment' />
-        <img src={ Share} alt='share' />
+    <div key={id} className="Post">
+      <img
+        src={data.image ? process.env.REACT_APP_PUBLIC_FOLDER + data.image : ""}
+        alt="postimage"
+      />
+      <div className="detail">
+        <span>
+          <b>{data.name}</b>
+        </span>
+        <span> {data.desc}</span>
       </div>
 
-      <span style={{color: 'var(--gray)', fontSize: '12px'}}>{data.likes} likes</span>
-      
-      <div className="detail">
-        <span><b>{data.name}</b></span>
-        <span> { data.desc}</span>
+      <div className="postReact">
+        <img src={data.liked ? Heart : notLike} alt="like/notlike" />
+        <img src={Comment} alt="comment" />
+        <img src={Share} alt="share" />
       </div>
+
+      <span style={{ color: "var(--gray)", fontSize: "12px" }}>
+        {data.likes} likes
+      </span>
     </div>
-  )
+  );
 }
 
 export default Post

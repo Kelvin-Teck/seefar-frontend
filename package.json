@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  
+  "proxy": "https://glorious-blue-millipede.cyclic.app",
   "dependencies": {
     "@iconscout/react-unicons": "^2.0.2",
     "@mantine/core": "^6.0.19",

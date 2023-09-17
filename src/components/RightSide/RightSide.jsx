@@ -6,25 +6,28 @@ import TrendCard from '../TrendCard/TrendCard';
 import "./RightSide.css";
 import { useState } from 'react';
 import ShareModal from '../ShareModal/ShareModal';
+import { Link } from 'react-router-dom';
 
 const RightSide = () => {
   const [modalOpened, setModalOpened] = useState(false);
 
   return (
-      <div className='RightSide'>
-          <div className="navIcons">
-              <img src={Home} alt="home" />
-              <UilSetting />
-              <img src={ Noti} alt="notifications" />
-              <img src={ Comment} alt="comments" />
-          </div>
-          <TrendCard />
-          <button className="button r-button" onClick={() => setModalOpened(true)}>
-              Share
+    <div className="RightSide">
+      <div className="navIcons">
+        <Link to='../home'>
+          <img src={Home} alt="home" />
+        </Link>
+        <UilSetting />
+        <img src={Noti} alt="notifications" />
+        <img src={Comment} alt="comments" />
+      </div>
+      <TrendCard />
+      <button className="button r-button" onClick={() => setModalOpened(true)}>
+        Share
       </button>
-      <ShareModal modalOpened={modalOpened} setModalOpened={setModalOpened}/>
+      <ShareModal modalOpened={modalOpened} setModalOpened={setModalOpened} />
     </div>
-  )
+  );
 }
 
 export default RightSide

@@ -6,7 +6,7 @@ export const logIn = (FormData) => async (dispatch) => {
 
     try {
         const { data } = await authAPi.logIn(FormData);
-        dispatch({ type: 'AUTH_SUCCESS', payload: data });
+        dispatch({ type: 'AUTH_SUCCESS' , payload: data });
     } catch (error) {
         console.log(error);
         dispatch({type: 'AUTH_FAIL'})
@@ -26,3 +26,7 @@ export const signUp = (FormData) => async (dispatch) => {
         dispatch({type: 'AUTH_FAIL'})
     }
 }
+
+export const logOut = () => async (dispatch) => {
+    dispatch({ type: 'LOG_OUT' });
+} 

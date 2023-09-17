@@ -1,7 +1,10 @@
 import axios from "axios";
 
+// const API = axios.create({
+//   baseURL: "https://long-erin-clownfish-kilt.cyclic.app",
+// });
 const API = axios.create({
-  baseURL: "https://long-erin-clownfish-kilt.cyclic.app",
+  baseURL: "http://localhost:5000",
 });
 
 export const logIn = (FormData) => API.post('/auth/login', FormData);

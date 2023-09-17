@@ -43,3 +43,10 @@
     padding-left: 20px;
     padding-right: 20px;
 }
+
+.unfollowButton{
+    color: var(--orange);
+    background: transparent;
+    cursor: pointer;
+    border: 2px solid var(--orange);
+}

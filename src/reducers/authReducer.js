@@ -24,6 +24,7 @@ const authReducer = (state = {authData: null, loading: false, error: false, upda
         };
       case "UPDATING_FAIL":
         return { ...state, updateLoading: false, error: true };
+      
       case "FOLLOW_USER":
         return {
           ...state,
@@ -35,6 +36,7 @@ const authReducer = (state = {authData: null, loading: false, error: false, upda
             },
           },
         };
+      
       case "UNFOLLOW_USER":
         return {
           ...state,

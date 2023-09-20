@@ -5,12 +5,13 @@ import { Link } from 'react-router-dom';
 
 
 const ProfileCard = ({ location }) => {
-  const { user } = useSelector(state => state.authReducer.authData)
-    const { posts } = useSelector((state) => state.postReducer);
+  const { user } = useSelector(state => state.authReducer.authData);
+  const { posts } = useSelector((state) => state.postReducer);
+  console.log(user)
   
     const serverAssetsPublicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
 
-    const profilePage = false;
+  
 
   return (
     <div className="ProfileCard">

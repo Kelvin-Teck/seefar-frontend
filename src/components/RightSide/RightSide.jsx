@@ -1,12 +1,12 @@
-import Home from '../../img/home.png';
-import Noti from '../../img/noti.png';
-import Comment from '../../img/comment.png';
-import { UilSetting } from '@iconscout/react-unicons';
-import TrendCard from '../TrendCard/TrendCard';
+import Home from "../../img/home.png";
+import Noti from "../../img/noti.png";
+import Comment from "../../img/comment.png";
+import { UilSetting } from "@iconscout/react-unicons";
+import TrendCard from "../TrendCard/TrendCard";
 import "./RightSide.css";
-import { useState } from 'react';
-import ShareModal from '../ShareModal/ShareModal';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import ShareModal from "../ShareModal/ShareModal";
+import { Link } from "react-router-dom";
 
 const RightSide = () => {
   const [modalOpened, setModalOpened] = useState(false);
@@ -14,12 +14,14 @@ const RightSide = () => {
   return (
     <div className="RightSide">
       <div className="navIcons">
-        <Link to='../home'>
+        <Link to="../home">
           <img src={Home} alt="home" />
         </Link>
         <UilSetting />
         <img src={Noti} alt="notifications" />
-        <img src={Comment} alt="comments" />
+        <Link to={"/chat"}>
+          <img src={Comment} alt="comments" />
+        </Link>
       </div>
       <TrendCard />
       <button className="button r-button" onClick={() => setModalOpened(true)}>
@@ -28,6 +30,6 @@ const RightSide = () => {
       <ShareModal modalOpened={modalOpened} setModalOpened={setModalOpened} />
     </div>
   );
-}
+};
 
-export default RightSide
+export default RightSide;

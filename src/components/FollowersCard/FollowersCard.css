@@ -1,52 +1,98 @@
-.FollowersCard{
+.FollowerCard {
     width: 100%;
-    border-radius: 0.7rem;
-    gap: 1rem;
+    border-radius: 1.2rem;
+    gap: 1.2rem;
     display: flex;
     flex-direction: column;
-    font-size: 13px;
+    font-size: 14px;
+    background-color: var(--cardColor);
+    padding: 1rem;
+    box-shadow: var(--profileShadow);
+    box-sizing: border-box;
 }
 
+.FollowerCard > h3 {
+    margin: 0;
+    font-weight: 800;
+}
 
-.follower{
+.follower {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
 }
 
-.follower > div{
+.follower > div {
     display: flex;
-    gap: 10px; 
+    gap: 0.75rem;
+    align-items: center;
 }
 
-.followerImage{
-    width: 3.2rem;
-    height: 3.2rem;
+.followerImage {
+    width: 3.5rem;
+    height: 3.5rem;
     border-radius: 50%;
-    margin: .5rem 0 ;
+    object-fit: cover;
+    border: 2px solid var(--orange);
 }
 
-.name{
+.name {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
 }
 
-.name > span:nth-of-type(1){
-    font-weight: bold;
+.name > span:nth-of-type(1) {
+    font-weight: 700;
 }
 
-.fc-button{
-    height: 2rem;
-    padding-left: 20px;
-    padding-right: 20px;
+.name > span:nth-of-type(2) {
+    font-size: 0.8rem;
+    color: var(--gray);
 }
 
-.unfollowButton{
+.fc-button {
+    height: 2.2rem;
+    padding: 0 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.unfollowButton {
     color: var(--orange);
     background: transparent;
     cursor: pointer;
     border: 2px solid var(--orange);
+}
+
+.unfollowButton:hover {
+    background: var(--orange);
+    color: white;
+}
+
+.userActionButtons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.msgButton {
+    height: 2.2rem;
+    width: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--inputColor);
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid var(--hrColor);
+}
+
+.msgButton:hover {
+    background: var(--orange);
+    color: white;
+    border-color: var(--orange);
 }

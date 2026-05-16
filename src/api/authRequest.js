@@ -1,11 +1,4 @@
-import axios from "axios";
+import API from "./index";
 
-// const API = axios.create({
-//   baseURL: "https://long-erin-clownfish-kilt.cyclic.app",
-// });
-const API = axios.create({
-  baseURL: "http://localhost:5000",
-});
-
-export const logIn = (FormData) => API.post('/auth/login', FormData);
-export const signUp = (FormData) => API.post('/auth/register', FormData);
+export const logIn = (formData) => API.post('/auth/login', formData);
+export const signUp = (formData) => API.post('/auth/register', formData);

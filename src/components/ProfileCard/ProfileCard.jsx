@@ -1,36 +1,51 @@
 import './ProfileCard.css';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-
-
+import { Link, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import * as userApi from '../../api/userRequest';
+import useAuthStore from '../../store/authStore';
+import usePostStore from '../../store/postStore';
+import DefaultProfile from '../../img/profileImg.jpg';
+import DefaultCover from '../../img/cover.jpg';
 
 const ProfileCard = ({ location }) => {
-  const { user } = useSelector(state => state.authReducer.authData);
-  const { posts } = useSelector((state) => state.postReducer);
-  console.log(user)
-  
-    const serverAssetsPublicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
+  const currentUser = useAuthStore(state => state.authData?.user);
+  const posts = usePostStore((state) => state.posts);
+  const publicFolder = import.meta.env.VITE_PUBLIC_FOLDER;
+  const params = useParams();
+  const profileUserId = params.id || currentUser?._id;
+  const [user, setUser] = useState(currentUser || {});
 
-  
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!profileUserId) return;
+      if (profileUserId === currentUser?._id) {
+        setUser(currentUser);
+      } else {
+        try {
+          const { data } = await userApi.getUser(profileUserId);
+          setUser(data);
+        } catch (error) {
+          console.error("ProfileCard fetch error:", error);
+        }
+      }
+    };
+    fetchUser();
+  }, [currentUser, profileUserId]);
+
+  if (!user || Object.keys(user).length === 0) {
+    return <div className="ProfileCard">Loading profile...</div>;
+  }
 
   return (
     <div className="ProfileCard">
       <div className="ProfileImages">
         <img
-          src={
-            user.coverPicture
-              ? serverAssetsPublicFolder + user.coverPicture
-              : ""
-          }
-          alt=""
+          src={user.coverPicture ? publicFolder + user.coverPicture : DefaultCover}
+          alt="Cover"
         />
         <img
-          src={
-            user.profilePicture
-              ? serverAssetsPublicFolder + user.profilePicture
-              : ""
-          }
-          alt=""
+          src={user.profilePicture ? publicFolder + user.profilePicture : DefaultProfile}
+          alt="Profile"
         />
       </div>
 
@@ -38,26 +53,26 @@ const ProfileCard = ({ location }) => {
         <span>
           {user.firstname} {user.lastname}
         </span>
-        <span>{user.worksAt ? user.worksAt : "write about yourself..."}</span>
+        <span>{user.worksAt ? user.worksAt : "Write about yourself..."}</span>
       </div>
 
       <div className="followStatus">
         <hr />
         <div>
           <div className="follow">
-            <span>{user.following.length}</span>
-            <span>following</span>
+            <span>{user.following?.length || 0}</span>
+            <span>Following</span>
           </div>
           <div className="vl"></div>
           <div className="follow">
-            <span>{user.followers.length}</span>
-            <span>followers</span>
+            <span>{user.followers?.length || 0}</span>
+            <span>Followers</span>
           </div>
           {location === "profilePage" && (
             <>
               <div className="vl"></div>
               <div className="follow">
-                <span>{ posts.filter(post => post.userId === user._id).length}</span>
+                <span>{posts.filter(post => post.userId === user._id).length}</span>
                 <span>Posts</span>
               </div>
             </>
@@ -80,6 +95,6 @@ const ProfileCard = ({ location }) => {
       )}
     </div>
   );
-}
+};
 
-export default ProfileCard
+export default ProfileCard;

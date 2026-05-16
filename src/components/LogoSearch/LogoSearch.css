@@ -1,32 +1,52 @@
 .LogoSearch {
     display: flex;
     gap: 0.75rem;
-    margin: .7rem 0;
+    margin: 1rem 0;
+    align-items: center;
+}
+
+.LogoSearch > img {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
 }
 
 .Search {
     display: flex;
     background-color: var(--inputColor);
-    border-radius: 10px;
-    padding: 5px;
+    border-radius: 12px;
+    padding: 8px 12px;
+    flex: 1; /* Take up available space */
+    align-items: center;
+    transition: all 0.3s ease;
 }
 
-.Search>input {
+.Search:focus-within {
+    background-color: rgba(40, 52, 62, 0.12);
+    box-shadow: 0 0 0 2px var(--orange);
+}
+
+.Search > input {
     background-color: transparent;
     border: none;
     outline: none;
+    width: 100%;
+    font-size: 0.9rem;
+    color: var(--black);
 }
 
 .s-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(106.23deg, #f99827, #f95f35 100%);
-    border-radius: 5px;
-    padding: 4px;
+    background: var(--buttonBg);
+    border-radius: 8px;
+    padding: 6px;
     color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease;
 }
 
 .s-icon:hover {
-    cursor: pointer;
+    transform: scale(1.05);
 }

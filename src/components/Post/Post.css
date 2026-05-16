@@ -1,21 +1,112 @@
 .Post {
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: 1.2rem;
     background-color: var(--cardColor);
-    border-radius: 1rem;
+    border-radius: 1.2rem;
     gap: 1rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+/* Post Header / Author details */
+.postHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.postAuthor {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.postAuthor:hover {
+    transform: translateX(3px);
+}
+
+.postAuthorAvatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--orange);
+    padding: 2px;
+}
+
+.postAuthorInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.postAuthorName {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--textColor, #242d49);
+}
+
+.postAuthorHandle {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: -2px;
+}
+
+.postTime {
+    font-size: 0.8rem;
+    color: var(--gray);
+    font-weight: 500;
+    background: rgba(0, 0, 0, 0.04);
+    padding: 4px 10px;
+    border-radius: 12px;
 }
 
 .Post>img {
     width: 100%;
-    max-height: 20rem;
+    max-height: 25rem;
+    min-height: 10rem;
     object-fit: cover;
-    border-radius: 0.5rem;
+    border-radius: 0.8rem;
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .postReact {
     display: flex;
     align-items: flex-start;
     gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.postVideo {
+    width: 100%;
+    max-height: 25rem;
+    border-radius: 0.8rem;
+    background-color: black;
+}
+
+.postMetaTags {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+.postMetaBadge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.detail {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--textColor, #242d49);
 }

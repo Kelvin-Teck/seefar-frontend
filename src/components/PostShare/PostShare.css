@@ -1,79 +1,75 @@
-.PostShare{
+.PostShareTrigger {
     display: flex;
+    flex-direction: column;
     gap: 1rem;
     background: var(--cardColor);
     padding: 1rem;
     border-radius: 1rem;
+    box-shadow: var(--profileShadow);
 }
 
-.PostShare > img{
-    border-radius: 50%;
-    width: 3rem;
-    height: 3rem;
-}
-
-.PostShare > div{
+.triggerMain {
     display: flex;
-    flex-direction: column;
-    width: 90%;
     gap: 1rem;
+    align-items: center;
 }
 
-.PostShare > div > input{
+.triggerMain > img {
+    border-radius: 50%;
+    width: 3.2rem;
+    height: 3.2rem;
+    object-fit: cover;
+}
+
+.searchBar {
     background-color: var(--inputColor);
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 17px;
-    border: none;
-    outline: none;
-} 
-
-.postOptions{
-    display: flex;
-    justify-content: space-around;
-}
-
-.option{
-    padding: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 10px;
+    border-radius: 2rem;
+    padding: 0 1.5rem;
+    height: 3rem;
+    flex: 1;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 12px;
-}
-
-.option:hover{
+    color: var(--gray);
+    font-size: 0.95rem;
     cursor: pointer;
+    transition: background 0.3s ease;
+    border: 1px solid transparent;
 }
 
-.ps-button{
-    padding: 5px;
-    padding-left: 20px;
-    padding-right: 20px;
-    font-size: 12px;
+.searchBar:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: var(--hrColor);
 }
 
-.previewImage{
-    position: relative;
+.triggerActions {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--hrColor);
+    padding-top: 0.8rem;
 }
 
-.previewImage > p{
-    position: absolute;
-    right: 1rem;
-    top: 0.5rem;
+.triggerOption {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 8px 12px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: background 0.3s ease;
 }
 
-.previewImage > img{
-    width: 100%;
-    max-height: 20rem;
-    object-fit: cover;
-    border-radius: 0.5rem;
+.triggerOption:hover {
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
+.triggerOption > span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gray);
+}
 
-
-
-
+@media screen and (max-width: 768px) {
+    .triggerOption > span {
+        display: none;
+    }
+}

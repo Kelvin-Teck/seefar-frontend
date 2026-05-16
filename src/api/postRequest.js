@@ -1,12 +1,7 @@
-import axios from "axios";
+import API from "./index";
 
-// const API = axios.create({
-//   baseURL: "https://long-erin-clownfish-kilt.cyclic.app",
-// });
+export const getTimelinePosts = (id, page = 1, limit = 10) => API.get(`/post/${id}/timeline?page=${page}&limit=${limit}`);
+export const likePost = (id, userId) => API.put(`/post/${id}/like`, { userId: userId });
+export const getTrends = () => API.get('/post/trends');
+export const getExplorePosts = () => API.get('/post/explore');
 
-const API = axios.create({
-  baseURL: "http://localhost:5000",
-});
-
-export const getTimelinePosts = (id) => API.get(`/post/${id}/timeline`);
-export const likePost = (id, userId) => API.put(`post/${id}/like`, { userId: userId });

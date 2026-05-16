@@ -1,9 +1,8 @@
 import { Modal, useMantineTheme } from "@mantine/core";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { uploadImage } from "../../api/uploadRequest";
-import { updateUser } from "../../actions/userAction";
+import { useState, useRef } from "react";
+import useAuthStore from "../../store/authStore";
+import { UilCloudUpload, UilUserSquare, UilScenery } from "@iconscout/react-unicons";
+import "./ProfileModal.css";
 
 function ProfileModal({ modalOpened, setModalOpened, data }) {
   const theme = useMantineTheme();
@@ -12,61 +11,65 @@ function ProfileModal({ modalOpened, setModalOpened, data }) {
   const [formData, setFormData] = useState(others);
   const [profileImage, setProfileImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
+  const [draggingProfile, setDraggingProfile] = useState(false);
+  const [draggingCover, setDraggingCover] = useState(false);
 
-  const dispatch = useDispatch();
-  const params = useParams();
-  const { user } = useSelector((state) => state.authReducer.authData);
+  const profileRef = useRef();
+  const coverRef = useRef();
+  const publicFolder = import.meta.env.VITE_PUBLIC_FOLDER;
+
+  const { updateUser } = useAuthStore();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const onImageChange = (e) => {
+  const onImageChange = (e, field) => {
     if (e.target.files && e.target.files[0]) {
       let img = e.target.files[0];
-      console.log(img);
-      e.target.name === "profileImage"
-        ? setProfileImage(img)
-        : setCoverImage(img);
+      if (field === "profileImage") setProfileImage(img);
+      else setCoverImage(img);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleDrop = (e, field) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (field === "profileImage") setDraggingProfile(false);
+    else setDraggingCover(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      let img = e.dataTransfer.files[0];
+      if (field === "profileImage") setProfileImage(img);
+      else setCoverImage(img);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let userData = formData;
+    let userData = { ...formData };
+    let images = [];
 
     if (profileImage) {
       const data = new FormData();
       const fileName = Date.now() + profileImage.name;
       data.append("name", fileName);
       data.append("file", profileImage);
-
       userData.profilePicture = fileName;
-
-      try {
-        dispatch(uploadImage(data));
-      } catch (error) {
-        console.log(error);
-      }
+      images.push(data);
     }
 
     if (coverImage) {
       const data = new FormData();
       const fileName = Date.now() + coverImage.name;
       data.append("name", fileName);
-      data.append("file", coverImage );
-
+      data.append("file", coverImage);
       userData.coverPicture = fileName;
-
-      try {
-        dispatch(uploadImage(data));
-      } catch (error) {
-        console.log(error);
-      }
+      images.push(data);
     }
 
-    dispatch(updateUser(params.id, userData))
+    await updateUser(formData._id, userData, images);
     setModalOpened(false);
   };
 
@@ -82,26 +85,27 @@ function ProfileModal({ modalOpened, setModalOpened, data }) {
       size="55%"
       opened={modalOpened}
       onClose={() => setModalOpened(false)}
+      title={<b style={{ fontSize: "1.3rem" }}>Edit Profile</b>}
+      centered
+      radius="lg"
     >
-      <form className="infoForm">
-        <h3>Your info</h3>
-
+      <form className="infoForm profileModalForm" onSubmit={handleSubmit}>
         <div>
           <input
             type="text"
             className="infoInput"
-            name="FirstName"
+            name="firstname"
             placeholder="First Name"
-            value={formData.firstname}
+            value={formData.firstname || ""}
             onChange={handleChange}
           />
 
           <input
             type="text"
             className="infoInput"
-            name="LastName"
+            name="lastname"
             placeholder="Last Name"
-            value={formData.lastname}
+            value={formData.lastname || ""}
             onChange={handleChange}
           />
         </div>
@@ -112,7 +116,7 @@ function ProfileModal({ modalOpened, setModalOpened, data }) {
             className="infoInput"
             name="worksAt"
             placeholder="Works at"
-            value={formData.worksAt}
+            value={formData.worksAt || ""}
             onChange={handleChange}
           />
         </div>
@@ -122,8 +126,8 @@ function ProfileModal({ modalOpened, setModalOpened, data }) {
             type="text"
             className="infoInput"
             name="livesIn"
-            placeholder="LIves in"
-            value={formData.livesIn}
+            placeholder="Lives in"
+            value={formData.livesIn || ""}
             onChange={handleChange}
           />
 
@@ -132,7 +136,7 @@ function ProfileModal({ modalOpened, setModalOpened, data }) {
             className="infoInput"
             name="country"
             placeholder="Country"
-            value={formData.country}
+            value={formData.country || ""}
             onChange={handleChange}
           />
         </div>
@@ -142,21 +146,85 @@ function ProfileModal({ modalOpened, setModalOpened, data }) {
             type="text"
             name="relationship"
             className="infoInput"
-            placeholder="RelationShip Status"
-            value={formData.relationship}
+            placeholder="Relationship Status"
+            value={formData.relationship || ""}
             onChange={handleChange}
           />
         </div>
 
-        <div>
-          Profile Image
-          <input type="file" name="profileImage" onChange={onImageChange} />
-          Cover Image
-          <input type="file" name="coverImage" onChange={onImageChange} />
+        {/* Premium Drag and Drop Upload Boxes */}
+        <div className="dropzoneContainer">
+          {/* Profile Image Dropzone */}
+          <div
+            className={`dropzoneBox ${draggingProfile ? "dragging" : ""}`}
+            onClick={() => profileRef.current?.click()}
+            onDragOver={(e) => { e.preventDefault(); setDraggingProfile(true); }}
+            onDragLeave={() => setDraggingProfile(false)}
+            onDrop={(e) => handleDrop(e, "profileImage")}
+          >
+            {profileImage ? (
+              <>
+                <img src={URL.createObjectURL(profileImage)} alt="profile preview" className="dropzonePreview" />
+                <div className="dropzoneOverlay">
+                  <UilCloudUpload size={30} />
+                  <span>Click or Drop to Replace</span>
+                </div>
+              </>
+            ) : formData.profilePicture ? (
+              <>
+                <img src={publicFolder + formData.profilePicture} alt="existing profile" className="dropzonePreview" />
+                <div className="dropzoneOverlay">
+                  <UilCloudUpload size={30} />
+                  <span>Click or Drop to Replace</span>
+                </div>
+              </>
+            ) : (
+              <div className="dropzoneContent">
+                <UilUserSquare size={36} className="dropzoneIcon" />
+                <span><b>Profile Image</b></span>
+                <span>Click or Drag & Drop</span>
+              </div>
+            )}
+            <input type="file" ref={profileRef} style={{ display: "none" }} accept="image/*" onChange={(e) => onImageChange(e, "profileImage")} />
+          </div>
+
+          {/* Cover Image Dropzone */}
+          <div
+            className={`dropzoneBox ${draggingCover ? "dragging" : ""}`}
+            onClick={() => coverRef.current?.click()}
+            onDragOver={(e) => { e.preventDefault(); setDraggingCover(true); }}
+            onDragLeave={() => setDraggingCover(false)}
+            onDrop={(e) => handleDrop(e, "coverImage")}
+          >
+            {coverImage ? (
+              <>
+                <img src={URL.createObjectURL(coverImage)} alt="cover preview" className="dropzonePreview" />
+                <div className="dropzoneOverlay">
+                  <UilCloudUpload size={30} />
+                  <span>Click or Drop to Replace</span>
+                </div>
+              </>
+            ) : formData.coverPicture ? (
+              <>
+                <img src={publicFolder + formData.coverPicture} alt="existing cover" className="dropzonePreview" />
+                <div className="dropzoneOverlay">
+                  <UilCloudUpload size={30} />
+                  <span>Click or Drop to Replace</span>
+                </div>
+              </>
+            ) : (
+              <div className="dropzoneContent">
+                <UilScenery size={36} className="dropzoneIcon" />
+                <span><b>Cover Image</b></span>
+                <span>Click or Drag & Drop</span>
+              </div>
+            )}
+            <input type="file" ref={coverRef} style={{ display: "none" }} accept="image/*" onChange={(e) => onImageChange(e, "coverImage")} />
+          </div>
         </div>
 
-        <button className="button infoButton" onClick={handleSubmit}>
-          Update
+        <button className="modalUpdateBtn" type="submit">
+          Update Profile
         </button>
       </form>
     </Modal>

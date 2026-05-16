@@ -1,12 +1,11 @@
 import "./Auth.css";
 import Logo from "../../img/logo.png";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { logIn, signUp } from "../../actions/authAction";
+import useAuthStore from "../../store/authStore";
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
-  const dispatch = useDispatch();
+  const { login, register, loading } = useAuthStore();
   const [data, setData] = useState({
     firstname: "",
     lastname: "",
@@ -25,10 +24,10 @@ const Auth = () => {
 
     if (isSignUp) {
       data.password === data.confirmpass
-        ? dispatch(signUp(data))
+        ? register(data)
         : setConfirmPass(false);
     } else {
-      dispatch(logIn(data));
+      login(data);
     }
   };
 
@@ -134,53 +133,13 @@ const Auth = () => {
                 : "Don't have an account? Sign Up"}
             </span>
           </div>
-          <button className="button infoButton" type="submit">
-            {isSignUp ? "Signup" : "Log In"}
+          <button className="button infoButton" type="submit" disabled={loading}>
+            {loading ? "Loading..." : (isSignUp ? "Signup" : "Log In")}
           </button>
         </form>
       </div>
     </div>
   );
 };
-
-// function LogIn() {
-//   return (
-//     <div className="a-right">
-//       <form className="infoForm authForm">
-//         <h3>Log In</h3>
-
-//         <div>
-//           <input
-//             type="text"
-//             placeholder="Username"
-//             className="infoInput"
-//             name="username"
-//           />
-//         </div>
-
-//         <div>
-//           <input
-//             type="password"
-//             className="infoInput"
-//             placeholder="Password"
-//             name="password"
-//           />
-//         </div>
-
-//         <div>
-//           <span style={{ fontSize: "12px" }}>
-//             Don't have an account Sign up
-//           </span>
-//           <button className="button infoButton">Login</button>
-//         </div>
-//       </form>
-//     </div>
-//   );
-// }
-// function SignUp() {
-//   return (
-
-//   );
-// }
 
 export default Auth;

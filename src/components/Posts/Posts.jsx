@@ -1,30 +1,56 @@
-import { useDispatch, useSelector } from "react-redux";
 import Post from "../Post/Post";
 import "./Posts.css";
-import { useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useParams } from 'react-router-dom';
-import { getTimelinePosts } from "../../actions/postAction";
+import useAuthStore from "../../store/authStore";
+import usePostStore from "../../store/postStore";
 
 const Posts = () => {
-  const dispatch = useDispatch();
-  const params = useParams()
-  const { user } = useSelector((state) => state.authReducer.authData);
-  let { posts, loading } = useSelector((state) => state.postReducer);
-  
+  const params = useParams();
+  const user = useAuthStore((state) => state.authData.user);
+  let { posts, loading, getTimelinePosts, hasMore } = usePostStore();
+  const observer = useRef();
+
+  const lastPostElementRef = useCallback(node => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        getTimelinePosts(user._id, true);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, hasMore, getTimelinePosts, user._id]);
+
   useEffect(() => {
-    dispatch(getTimelinePosts(user._id));
-  }, [])
+    // Initial fetch
+    getTimelinePosts(user._id);
+  }, [user._id, getTimelinePosts]);
 
   if (!posts) return "No posts to display...";
-  if(params.id) posts = posts.filter(post => post.userId === params._id)
-
+  
+  let displayedPosts = posts;
+  if(params.id) displayedPosts = posts.filter(post => post.userId === params.id);
 
   return (
     <div className="Posts">
-      {
-       loading ? "Fetching Posts..." :  posts.map((post, id) => {
-        return <Post data={post} id={id} />;
+      {displayedPosts.map((post, index) => {
+        if (displayedPosts.length === index + 1) {
+          return (
+            <div ref={lastPostElementRef} key={post._id || index}>
+              <Post data={post} />
+            </div>
+          );
+        } else {
+          return <Post data={post} key={post._id || index} />;
+        }
       })}
+      {loading && <div style={{ textAlign: "center", padding: "1rem" }}>Fetching more posts...</div>}
+      {!hasMore && displayedPosts.length > 0 && (
+        <div style={{ textAlign: "center", padding: "1rem", color: "var(--gray)" }}>
+          You've reached the end of the timeline!
+        </div>
+      )}
     </div>
   );
 };

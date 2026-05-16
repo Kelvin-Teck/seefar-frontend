@@ -1,32 +1,45 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { followUser, unFollowUser } from "../../actions/userAction";
+import useAuthStore from "../../store/authStore";
+import DefaultProfile from "../../img/profileImg.jpg";
+import { UilMessage } from "@iconscout/react-unicons";
+import { useNavigate } from "react-router-dom";
+import { createChat } from "../../api/chatRequest";
 
-const User = ({ person, id }) => {
-  const { user } = useSelector((state) => state.authReducer.authData);
-  console.log(user )
-  const [following, setFollowing] = useState(person.followers.includes(user._id));
-  const serverAssetsPublicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
-  const dispatch = useDispatch();
+const User = ({ person }) => {
+  const user = useAuthStore((state) => state.authData.user);
+  const { followUser, unfollowUser } = useAuthStore();
+  const [following, setFollowing] = useState(person.followers?.includes(user._id));
+  const serverAssetsPublicFolder = import.meta.env.VITE_PUBLIC_FOLDER;
+  const navigate = useNavigate();
 
   const handleFollow = () => {
     following
-      ? dispatch(unFollowUser(person._id, user))
-      : dispatch(followUser(person._id, user));
+      ? unfollowUser(person._id)
+      : followUser(person._id);
     
     setFollowing(prev => !prev); 
   };
 
+  const handleMessage = async () => {
+    try {
+      await createChat({ senderId: user._id, recieverId: person._id });
+      navigate('/chat');
+    } catch (error) {
+      console.error(error);
+      navigate('/chat');
+    }
+  };
+
   return (
     <div className="follower">
-      <div key={id}>
+      <div>
         <img
           src={
             person.profilePicture
               ? serverAssetsPublicFolder + person.profilePicture
-              : ""
+              : DefaultProfile
           }
-          alt=""
+          alt="Profile"
           className="followerImage"
         />
         <div className="name">
@@ -36,9 +49,15 @@ const User = ({ person, id }) => {
           <span>@{person.username}</span>
         </div>
       </div>
-      <button className={following ? "button fc-button unfollowButton" : "button fc-button"} onClick={handleFollow}>
-        {following ? "Unfollow" : "Follow"}
-      </button>
+
+      <div className="userActionButtons">
+        <div className="msgButton" onClick={handleMessage} title="Message">
+          <UilMessage size={18} />
+        </div>
+        <button className={following ? "button fc-button unfollowButton" : "button fc-button"} onClick={handleFollow}>
+          {following ? "Unfollow" : "Follow"}
+        </button>
+      </div>
     </div>
   );
 };

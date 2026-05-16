@@ -1,6 +1,25 @@
 .Home{
     position: relative;
     display: grid;
-    grid-template-columns: 18rem auto 20rem;
+    grid-template-columns: 22rem auto 20rem;
     gap: 1rem;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Ensure the columns handle their own scrolling if needed */
+.Home > div {
+    height: 100vh;
+    overflow-y: auto;
+    padding-bottom: 2rem; /* Spacing at the bottom */
+}
+
+/* Hide scrollbars for a cleaner look while maintaining functionality */
+.Home > div::-webkit-scrollbar {
+    display: none;
+}
+
+.Home > div {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }

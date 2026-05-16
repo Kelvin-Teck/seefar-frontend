@@ -1,121 +1,47 @@
-import { useState, useRef } from "react";
+import React, { useState } from "react";
 import "./PostShare.css";
-import { UilScenery } from "@iconscout/react-unicons";
-import { UilPlayCircle } from "@iconscout/react-unicons";
-import { UilLocationPoint } from "@iconscout/react-unicons";
-import { UilSchedule } from "@iconscout/react-unicons";
-import { useDispatch, useSelector } from "react-redux";
-import { uploadImage, uploadPost } from "../../actions/uploadAction";
+import { UilScenery, UilPlayCircle, UilLocationPoint, UilSchedule } from "@iconscout/react-unicons";
+import useAuthStore from "../../store/authStore";
+import DefaultProfile from "../../img/profileImg.jpg";
+import ShareModal from "../ShareModal/ShareModal";
 
 const PostShare = () => {
-  const { user } = useSelector((state) => state.authReducer.authData);
-  const loading = useSelector((state) => state.postReducer.uploading);
-  const serverAssetsPublicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
-
-  const dispatch = useDispatch();
-  const [image, setImage] = useState(null);
-  const imageRef = useRef();
-  const desc = useRef();
-
-  const reset = () => {
-    setImage(null);
-    desc.current.value = "";
-  };
-
-  const onImageChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      let img = event.target.files[0];
-      console.log(img);
-      setImage(img);
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const newPost = {
-      userId: user._id,
-      desc: desc.current.value,
-    };
-
-    if (image) {
-      const data = new FormData();
-      const filename = Date.now() + image.name;
-      data.append("name", filename);
-      data.append("file", image);
-      newPost.image = filename;
-
-      try {
-        dispatch(uploadImage(data));
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    dispatch(uploadPost(newPost));
-    reset();
-  };
+  const user = useAuthStore((state) => state.authData.user);
+  const serverAssetsPublicFolder = import.meta.env.VITE_PUBLIC_FOLDER;
+  const [modalOpened, setModalOpened] = useState(false);
 
   return (
-    <div className="PostShare">
-      <img
-        src={
-          user.profilePicture
-            ? serverAssetsPublicFolder + user.profilePicture
-            : ""
-        }
-        alt=""
-      />
-      <div>
-        <input
-          type="text"
-          placeholder="What is happening?"
-          ref={desc}
-          required
+    <div className="PostShareTrigger">
+      <div className="triggerMain">
+        <img
+          src={user.profilePicture ? serverAssetsPublicFolder + user.profilePicture : DefaultProfile}
+          alt="Profile"
         />
-        <div className="postOptions">
-          <div
-            className="option"
-            style={{ color: "var(--photo)" }}
-            onClick={() => imageRef.current.click()}
-          >
-            <UilScenery /> Photo
-          </div>
-          <div className="option" style={{ color: "var(--video)" }}>
-            <UilPlayCircle />
-            Video
-          </div>
-          <div className="option" style={{ color: "var(--location)" }}>
-            <UilLocationPoint />
-            Location
-          </div>
-          <div className="option" style={{ color: "var(--schedule)" }}>
-            <UilSchedule /> Schedule
-          </div>
-          <button
-            className="button ps-button"
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? "uploading..." : "Share"}
-          </button>
-          <div style={{ display: "none" }}>
-            <input
-              type="file"
-              name="myImage"
-              ref={imageRef}
-              onChange={onImageChange}
-            />
-          </div>
+        <div className="searchBar" onClick={() => setModalOpened(true)}>
+          What's on your mind, {user.firstname}?
         </div>
-
-        {image && (
-          <div className="previewImage">
-            <p onClick={() => setImage(null)}>X</p>
-            <img src={URL.createObjectURL(image)} alt="" />
-          </div>
-        )}
       </div>
+      
+      <div className="triggerActions">
+        <div className="triggerOption" onClick={() => setModalOpened(true)}>
+          <UilScenery style={{ color: "var(--photo)" }} />
+          <span>Photo</span>
+        </div>
+        <div className="triggerOption" onClick={() => setModalOpened(true)}>
+          <UilPlayCircle style={{ color: "var(--video)" }} />
+          <span>Video</span>
+        </div>
+        <div className="triggerOption" onClick={() => setModalOpened(true)}>
+          <UilLocationPoint style={{ color: "var(--location)" }} />
+          <span>Location</span>
+        </div>
+        <div className="triggerOption" onClick={() => setModalOpened(true)}>
+          <UilSchedule style={{ color: "var(--schedule)" }} />
+          <span>Schedule</span>
+        </div>
+      </div>
+
+      <ShareModal modalOpened={modalOpened} setModalOpened={setModalOpened} />
     </div>
   );
 };

@@ -1,13 +1,14 @@
-import { useSelector } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import Auth from "./pages/auth/Auth";
 import Profile from "./pages/profile/Profile";
 import Home from "./pages/home/Home";
 import Chat from "./pages/chat/Chat";
+import Explore from "./pages/explore/Explore";
+import useAuthStore from "./store/authStore";
 
 function App() {
-  const user = useSelector((state) => state.authReducer.authData);
+  const user = useAuthStore((state) => state.authData);
 
   return (
     <div className="app">
@@ -34,6 +35,10 @@ function App() {
         <Route
           path="/chat"
           element={user ? <Chat /> : <Navigate to="../auth" />}
+        />
+        <Route
+          path="/explore"
+          element={user ? <Explore /> : <Navigate to="../auth" />}
         />
       </Routes>
     </div>
